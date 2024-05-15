@@ -1,0 +1,184 @@
+<app-header></app-header>
+<div class="content container m-0 p-0 m-auto ">
+    <div class="row m-auto p-2 ">
+        <div class="col-lg-3 cstmInput">
+            <label for="origin" class="form-label">From*</label>
+            <input type="text" class="form-control" list="datalistOptionsOrigin" id="origin"
+                placeholder="Search origin..." [(ngModel)]="origin" name="origin" required>
+            <datalist id="datalistOptionsOrigin">
+                <option *ngFor="let data of cities" value="{{data}}">
+            </datalist>
+            <div *ngIf="isOrigin" class="text-danger"> select origin</div>
+        </div>
+        <div class="col-lg-1 centeralign">
+            <i class="bi bi-arrow-repeat" (click)="swapLocation()"></i>
+        </div>
+        <div class="col-lg-3 cstmInput ">
+            <label for="exampleDataList" class="form-label">To*</label>
+            <input class="form-control" list="datalistOptionsDest" id="destination" placeholder="Search destination..."
+                name="destination" [(ngModel)]="destination">
+            <datalist id="datalistOptionsDest">
+                <option *ngFor="let data of cities" value="{{data}}">
+            </datalist>
+            <div *ngIf="isDestination" class="text-danger"> select destination</div>
+        </div>
+        <div class="col-lg-2 cstmInput">
+            <label for="date" class="form-label">Date*</label>
+            <input type="date" name="flightDate" id="flightDate" class="form-control" [(ngModel)]="date">
+            <div *ngIf="isDate" class="text-danger"> select date</div>
+        </div>
+
+        <div class="col-lg-3 cstmInput centeralign">
+            <button type="submit" class="btn btn-primary mb-2 " (click)="searchFlight()">Search Flight</button>
+            <button type="reset" class="btn btn-danger mx-2 mb-2 " (click)="resetAfterSuccess()">Reset</button>
+        </div>
+    </div>
+
+
+    <div *ngIf="searchClicked">
+        <div class="row centeralign m-auto p-2" style="background-color: #b4d4d8;">
+            <div class="col-lg-5">
+                <label for="filter" class="form-label">Filter</label>
+                <select (change)="priceFilter()" class="form-control" [(ngModel)]="priceFilterValue">
+                    <option value=null>select filter</option>
+                    <option value="1">Price low to high</option>
+                    <option value="2">Price high to low</option>
+                </select>
+            </div>
+
+            <div class="col-lg-1"></div>
+            <div class="col-lg-5">
+                <label for="airlines" class="form-label">Airlines</label>
+                <input type="text" (change)="searchFlight()" class="form-control" list="datalistOptionsAirlines"
+                    id="airlines" placeholder="Search airlines..." [(ngModel)]="airlines" name="airlines" required>
+                <datalist id="datalistOptionsAirlines">
+                    <option *ngFor="let data of airlineList" value="{{data}}">
+                </datalist>
+            </div>
+
+        </div>
+
+        <div class="row centeralign m-auto p-2 ">
+            <div *ngIf="flightsList.length>0 else noMoreFlight">
+                <div class="card shadow m-2 " *ngFor="let data of flightsList">
+                    <div class="card-body ">
+                        <div class="col-lg-12 table-responsive ">
+                            <table class="table p-0 m-0 ">
+                                <thead>
+                                    <tr>
+                                        <th>Airline</th>
+                                        <th>Aircraft</th>
+                                        <th>Departure</th>
+                                        <th>Flight Duration</th>
+                                        <th>Arrival</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <ng-container *ngIf="flightsList != undefined;">
+                                    <tbody>
+                                        <tr>
+                                            <td>{{data.airline}} <br> {{data.flightNumber}}</td>
+                                            <td>{{data.aircraft}}</td>
+                                            <td>{{data.departureTime |date:'HH:mm:ss' }}</td>
+                                            <td>{{data.duration}}</td>
+                                            <td>{{data.arrivalTime |date:'HH:mm:ss'}}</td>
+                                            <td>{{data.price}}</td>
+                                            <td>
+                                                <button class="btn btn-primary" (click)="bookFlight(data)">
+                                                    Book Fight
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </ng-container>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noMoreFlight>
+                <div class="shadow bg-white text-center text-danger p-2">No <span class="fw-bold">{{this.airlines}}
+                    </span> flights available between
+                    <span class="fw-bold">{{this.origin}} </span> to <span class="fw-bold">{{this.destination}}</span>
+                    on <span class="fw-bold">{{this.date}}</span>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade flightDetailModal" id="flightDetailModal" tabindex="-1" role="dialog" data-bs-backdrop='static'
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class=" modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Flight Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="resetModalData()"></button>
+            </div>
+            <div class="modal-body ">
+                <table class="table p-0 m-0 table-bordered ">
+                    <tbody *ngFor="let data of flightBookingList">
+                        <tr>
+                            <th>Airline</th>
+                            <td>{{data.airline}} <br> {{data.flightNumber}}</td>
+                        </tr>
+                        <tr>
+                            <th>Aircraft</th>
+                            <td>{{data.aircraft}}</td>
+                        </tr>
+                        <tr>
+                            <th>Departure</th>
+                            <td>{{data.departureTime |date:'HH:mm:ss' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Flight Duration</th>
+                            <td>{{data.duration }}</td>
+                        </tr>
+                        <tr>
+                            <th>Arrival</th>
+                            <td>{{data.arrivalTime |date:'HH:mm:ss'}}</td>
+                        </tr>
+                        <tr>
+                            <th>Price</th>
+                            <td>{{data.price}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="ticketBooked()">Book Ticket</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade flightBookedSuccess" id="flightBookedSuccess" tabindex="-1" role="dialog"
+    data-bs-backdrop='static' aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class=" modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title ">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="resetAfterSuccess()"></button>
+            </div>
+            <div class="modal-body centeralign ">
+                <div class=" text-success">
+                    <i class="bi bi-bookmark-check centeralign successIcon"></i><br>
+                    Flight Booked Successfully
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="resetAfterSuccess()">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>
+
+<app-loader *ngIf="isLoader" ></app-loader>
