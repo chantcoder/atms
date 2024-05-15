@@ -12,7 +12,7 @@ export class AtmsComponent implements OnInit {
   constructor(private _api: ApiService) { }
 
   ngOnInit() {
-    this.getSourceCity();
+    this.getFlightDetails();
   }
 
   origin: string = '';
@@ -23,35 +23,30 @@ export class AtmsComponent implements OnInit {
   cities: any[] = [];
   airlineList: any[] = [];
   allFlightData: any[] = [];
-  getSourceCity() {
+
+  getFlightDetails() {
     this.showLoader();
     this._api.getFlightData().subscribe({
-      next: (result: any) => {
+      next: (result: any[]) => {
         this.allFlightData = result;
-        let length = this.allFlightData.length;
-        for (let i = 0; i < length; i++) {
-          // Use < instead of <= in the loop condition
-          this.cities.push(this.allFlightData[i].origin);
-          this.airlineList.push(this.allFlightData[i].airline);
-        }
-
-        this.cities = [...new Set(this.cities)];
-        this.airlineList = [...new Set(this.airlineList)];
-      }, error: () => {
-        this.hideLoader();
+        this.cities = [...new Set(result.map(flight => flight.origin))];
+        this.airlineList = [...new Set(result.map(flight => flight.airline))];
       },
-      complete: () => {
-        this.hideLoader();
-      }
-    })
+      error: () => this.hideLoader(),
+      complete: () => this.hideLoader()
+    });
+
   }
 
-
-  swapLocation() {
-    let swaplocation = this.origin;
-    this.origin = this.destination;
-    this.destination = swaplocation;
+  swapLocations(): void {
+    [this.origin, this.destination] = [this.destination, this.origin];
   }
+
+  // swapLocation() {
+  //   let swaplocation = this.origin;
+  //   this.origin = this.destination;
+  //   this.destination = swaplocation;
+  // }
 
 
   isOrigin: boolean = false;
@@ -151,6 +146,9 @@ export class AtmsComponent implements OnInit {
     this.airlines = '';
     this.flightsList = [];
     this.searchClicked = false;
+    this.isDate = false;
+    this.isDestination = false;
+    this.isOrigin = false;
   }
 
   flightBookingList: any[] = [];
