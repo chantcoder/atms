@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 export class ApiService {
   constructor(private http: HttpClient) { }
 
-  private dataUrl = 'https://api.npoint.io/378e02e8e732bb1ac55b';
+  private dataUrl = '';
+  // https://api.npoint.io/378e02e8e732bb1ac55b
 
   getFlightData(): Observable<any> {
     return this.http.get<any>(this.dataUrl);

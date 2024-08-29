@@ -1,0 +1,6 @@
+<div class="container wrapper ">
+    <div class="row text-center m-2 justify-content-center">
+        <div *ngFor="let data of cardArr" class="col-lg-3 px-4 py-4 m-3 shadow p-2" [ngClass]="data.class"
+            routerLink="{{data.path}}" title="{{data.title}}">{{data.cardName}}</div>
+    </div>
+</div>

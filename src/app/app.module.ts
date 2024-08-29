@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoaderComponent } from './common/loader/loader.component';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
+import { DashboardComponent } from './app-dashboard/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { FooterComponent } from './common/footer/footer.component';
     AtmsComponent,
     LoaderComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

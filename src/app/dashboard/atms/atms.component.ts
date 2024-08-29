@@ -13,8 +13,17 @@ export class AtmsComponent implements OnInit {
 
   ngOnInit() {
     this.getFlightDetails();
+
+    this.dumyLoaderCall();
   }
 
+  dumyLoaderCall() {
+    this.showLoader().then(() => {
+      setTimeout(()=>{
+        this.hideLoader();
+      },500)
+    })
+  }
   origin: string = '';
   destination: string = '';
   airlines: string = '';
@@ -178,12 +187,12 @@ export class AtmsComponent implements OnInit {
 
   pendingRequests: number = 0;
   isLoader: boolean = false;
-  showLoader() {
+  async showLoader() {
     this.pendingRequests++;
     this.isLoader = true;
   }
 
-  hideLoader() {
+  async hideLoader() {
     this.pendingRequests--;
     if (this.pendingRequests === 0) {
       this.isLoader = false;
